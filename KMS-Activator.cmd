@@ -14,32 +14,32 @@ exit /b %errorlevel%
 #>
 
 # =============================================================================
-#  KMS ����� -- �Զ�ʶ�� Windows / Office �汾��ƥ���ٷ� GVLK
+#  KMS 激活工具 -- 自动识别 Windows / Office 版本并匹配官方 GVLK
 # -----------------------------------------------------------------------------
-#  GVLK ��Դ : Microsoft Learn��KMS �ͻ��˼����Ͳ�Ʒ��Կ����Office �� GVLK��
-#  ֧��ϵͳ   : Windows 7 / 8 / 8.1 / 10 / 11��Server 2008 R2 ~ 2025
-#  ֧���׼�   : Office 2010 / 2013 / 2016 / 2019 / LTSC 2021 / LTSC 2024 (VL)
+#  GVLK 来源 : Microsoft Learn《KMS 客户端激活和产品密钥》《Office 的 GVLK》
+#  支持系统   : Windows 7 / 8 / 8.1 / 10 / 11，Server 2008 R2 ~ 2025
+#  支持套件   : Office 2010 / 2013 / 2016 / 2019 / LTSC 2021 / LTSC 2024 (VL)
 # =============================================================================
 
-# ================================ Ĭ������ ===================================
+# ================================ 默认配置 ===================================
 $Config = @{
-    Server  = 'kms.cgtsoft.com'   # Ĭ�� KMS ����������ͨ���˵��� /server: ���ǣ�
-    Port    = 1688                # Ĭ�� KMS �˿�
-    Timeout = 5000                # TCP ��ͨ�Բ��Գ�ʱ�����룩
+    Server  = 'kms.cgtsoft.com'   # 默认 KMS 服务器（可通过菜单或 /server: 覆盖）
+    Port    = 1688                # 默认 KMS 端口
+    Timeout = 5000                # TCP 连通性测试超时（毫秒）
 }
 # =============================================================================
 
 $ErrorActionPreference = 'Stop'
-try { $Host.UI.RawUI.WindowTitle = 'KMS ����� - Windows & Office' } catch { }
+try { $Host.UI.RawUI.WindowTitle = 'KMS 激活工具 - Windows & Office' } catch { }
 
 $WinAppId     = '55c92734-d682-4d71-983e-d6ec3f16059f'
 $OfficeAppIds = @('0ff1ce15-a989-479d-af46-f275c6370663', '59a52881-a989-479d-af46-f275c6370663')
 
 # =============================================================================
-#  1. �����ֵ䣺Windows & Office �ٷ� GVLK ��������˵��
+#  1. 数据字典：Windows & Office 官方 GVLK 与错误码说明
 # =============================================================================
 $GVLK = @{
-    # Windows 10 / 11���������� & LTSC 2019 / 2021��
+    # Windows 10 / 11（常规渠道 & LTSC 2019 / 2021）
     'W10' = @{
         'Professional'             = 'W269N-WFGWX-YVC9B-4J6C9-T83GX'
         'ProfessionalN'            = 'MH37W-N47XK-V7XM9-C7227-GCQG9'
@@ -53,7 +53,7 @@ $GVLK = @{
         'EnterpriseN'              = 'DPH2V-TTNVB-4X9Q3-TJR4H-KHJW4'
         'EnterpriseG'              = 'YYVX9-NTFWV-6MDM3-9PT4T-4M68B'
         'EnterpriseGN'             = '44RPN-FTY23-9VTTB-MP9BX-T84FV'
-        'ServerRdsh'               = 'CPWHC-NT2C7-VYW78-DHDB2-PG3GK'   # ��ҵ�����Ự
+        'ServerRdsh'               = 'CPWHC-NT2C7-VYW78-DHDB2-PG3GK'   # 企业版多会话
         'EnterpriseS'              = 'M7XTQ-FN8P6-TTKYV-9D4CC-J462D'   # LTSC 2019 / 2021 / 2024
         'EnterpriseSN'             = '92NFX-8DJQP-P6BBQ-THF9C-7CG2H'
         'IoTEnterpriseS'           = 'KBN8V-HFGQ4-MGXVD-347P6-PDQGT'   # IoT Enterprise LTSC 2021
@@ -291,38 +291,38 @@ $OfficeEditionAlias = @{
 }
 
 $ErrorText = @{
-    'C004F074' = '�޷����� KMS �����������������ߡ��˿ڱ����ػ� DNS ����ʧ�ܣ�'
-    '8007232B' = 'DNS ���Ʋ����ڣ�δ���� KMS �������������޷�����'
-    '8007232A' = 'DNS ����������'
-    'C004F038' = 'KMS �����������������㣨��������δ����ֵ�����Ժ����ԣ�'
-    'C004F039' = 'KMS �����������������㣨��������δ����ֵ�����Ժ����ԣ�'
-    'C004F06C' = 'ʱ������Ч������ϵͳʱ���� KMS ��������������������ͬ��ʱ��'
-    'C004F050' = '��Ʒ��Կ��Ч'
-    'C004F069' = '�Ҳ�����Ӧ SKU����ǰ�������ܲ���������Ȩ��VL���汾'
-    'C004F035' = '�ü������޷�ʹ��������Ȩ��Կ���Win7 �� VL ��������Ч SLIC ����'
-    'C004F015' = '����֤�������Σ���ǰ�汾���ܲ���������Ȩ��VL���汾'
-    'C004C003' = '��Ʒ��Կ�ѱ���ֹ'
-    'C004F042' = 'ָ���� KMS ��������֧�ּ����˲�Ʒ'
-    'C004F041' = 'KMS ����������δ����'
-    'C004E016' = '��Ʒ��Կ��֧�ֵ�ǰ�汾'
-    '80070005' = '�ܾ����ʣ����Ҽ�[�Թ���Ա��������]'
-    '80041003' = 'WMI �ܾ����ʣ����Ҽ�[�Թ���Ա��������]'
-    '8007000D' = 'KMS ���������ص�������Ч'
-    'C004F056' = 'KMS ����ʧ��'
+    'C004F074' = '无法连接 KMS 服务器（服务器离线、端口被拦截或 DNS 解析失败）'
+    '8007232B' = 'DNS 名称不存在：未配置 KMS 服务器或域名无法解析'
+    '8007232A' = 'DNS 服务器故障'
+    'C004F038' = 'KMS 服务器激活计数不足（服务器侧未达阈值，请稍后重试）'
+    'C004F039' = 'KMS 服务器激活计数不足（服务器侧未达阈值，请稍后重试）'
+    'C004F06C' = '时间戳无效：本机系统时间与 KMS 服务器相差过大，请先同步时间'
+    'C004F050' = '产品密钥无效'
+    'C004F069' = '找不到对应 SKU：当前软件可能不是批量授权（VL）版本'
+    'C004F035' = '该计算机无法使用批量授权密钥激活（Win7 需 VL 版或含有效 SLIC 表）'
+    'C004F015' = '许可证不受信任：当前版本可能不是批量授权（VL）版本'
+    'C004C003' = '产品密钥已被阻止'
+    'C004F042' = '指定的 KMS 服务器不支持激活此产品'
+    'C004F041' = 'KMS 服务器本身未激活'
+    'C004E016' = '产品密钥不支持当前版本'
+    '80070005' = '拒绝访问：请右键[以管理员身份运行]'
+    '80041003' = 'WMI 拒绝访问：请右键[以管理员身份运行]'
+    '8007000D' = 'KMS 服务器返回的数据无效'
+    'C004F056' = 'KMS 激活失败'
 }
 
 $StatusText = @{
-    0 = 'δ��Ȩ'
-    1 = '�Ѽ���'
-    2 = '��ʼ������'
-    3 = '���ӿ�����'
-    4 = '������������'
-    5 = '֪ͨģʽ��δ���'
-    6 = '��չ������'
+    0 = '未授权'
+    1 = '已激活'
+    2 = '初始宽限期'
+    3 = '附加宽限期'
+    4 = '非正版宽限期'
+    5 = '通知模式（未激活）'
+    6 = '扩展宽限期'
 }
 
 # =============================================================================
-#  2. �����Ű����������ߣ�֧�����պ�˫���ַ���ȷ���룩
+#  2. 界面排版与输出工具（支持中日韩双宽字符精确对齐）
 # =============================================================================
 $script:LineWidth = 66
 
@@ -402,7 +402,7 @@ function Write-KV([string]$Key, $Value, [string]$ValColor = 'White', [int]$KeyWi
 
 function Show-Banner {
     $border = '=' * $script:LineWidth
-    $title1 = Center-Display 'KMS �����  (Windows & Office)' ($script:LineWidth - 2)
+    $title1 = Center-Display 'KMS 激活工具  (Windows & Office)' ($script:LineWidth - 2)
     Write-Host ''
     Write-Host ('  ' + $border) -ForegroundColor DarkCyan
     Write-Host '  |' -ForegroundColor DarkCyan -NoNewline
@@ -413,26 +413,26 @@ function Show-Banner {
 
 function Show-Help {
     Write-Host ''
-    Write-Host '  �÷�: KMS-Activator.cmd [Ŀ��] [����]' -ForegroundColor Cyan
+    Write-Host '  用法: KMS-Activator.cmd [目标] [参数]' -ForegroundColor Cyan
     Write-Rule '-'
-    Write-KV '(�޲���)'            '�򿪽����˵���ѡ�񼤻� Windows �� Office' 'White' 22
-    Write-KV '/windows �� /win'    '�Զ�ʶ�𲢼��� Windows'                   'White' 22
-    Write-KV '/office'             '�Զ�ʶ�𲢼��� Office'                    'White' 22
-    Write-KV '/all'                '�����Զ����� Windows �� Office'           'White' 22
-    Write-KV '/check'              '�����⻷����ƥ���� GVLK�������κ��޸�'    'White' 22
-    Write-KV '/status'             '�鿴��ǰ Windows �� Office ����״̬'      'White' 22
-    Write-KV '/server:����[:�˿�]' 'ָ�� KMS ��������Ĭ�� kms.cgtsoft.com��'  'White' 22
-    Write-KV '/silent'             '��Ĭ���У���ѯ�ʡ���������ͣ��Ĭ�� /all��' 'White' 22
-    Write-KV '/force'              '��ʹ Windows �����ü���Ҳǿ���滻Ϊ KMS'  'White' 22
-    Write-KV '/help �� /?'         '��ʾ������˵��'                           'White' 22
+    Write-KV '(无参数)'            '打开交互菜单，选择激活 Windows 或 Office' 'White' 22
+    Write-KV '/windows 或 /win'    '自动识别并激活 Windows'                   'White' 22
+    Write-KV '/office'             '自动识别并激活 Office'                    'White' 22
+    Write-KV '/all'                '依次自动激活 Windows 和 Office'           'White' 22
+    Write-KV '/check'              '仅检测环境与匹配的 GVLK，不做任何修改'    'White' 22
+    Write-KV '/status'             '查看当前 Windows 与 Office 激活状态'      'White' 22
+    Write-KV '/server:主机[:端口]' '指定 KMS 服务器（默认 kms.cgtsoft.com）'  'White' 22
+    Write-KV '/silent'             '静默运行：不询问、结束不暂停（默认 /all）' 'White' 22
+    Write-KV '/force'              '即使 Windows 已永久激活也强制替换为 KMS'  'White' 22
+    Write-KV '/help 或 /?'         '显示本帮助说明'                           'White' 22
     Write-Rule '-'
-    Write-Host '  ʾ��: KMS-Activator.cmd /office /silent' -ForegroundColor DarkGray
+    Write-Host '  示例: KMS-Activator.cmd /office /silent' -ForegroundColor DarkGray
     Write-Host '        KMS-Activator.cmd /all /server:kms.cgtsoft.com:1688' -ForegroundColor DarkGray
     Write-Host ''
 }
 
 # =============================================================================
-#  3. ��������
+#  3. 参数解析
 # =============================================================================
 function Parse-ServerSpec([string]$Spec, $Opts) {
     if (-not $Spec) { return $false }
@@ -476,14 +476,14 @@ function Get-Options {
             'office'  { $o.Office  = $true }
             'all'     { $o.Windows = $true; $o.Office = $true }
             'server'  { [void](Parse-ServerSpec $val $o) }
-            default   { Write-Warn ('����δ֪����: ' + $tok) }
+            default   { Write-Warn ('忽略未知参数: ' + $tok) }
         }
     }
     return $o
 }
 
 # =============================================================================
-#  4. ϵͳʶ����ͨ�� WMI / ���繤��
+#  4. 系统识别与通用 WMI / 网络工具
 # =============================================================================
 $script:OSInfoCache = $null
 function Get-OSInfo {
@@ -499,7 +499,7 @@ function Get-OSInfo {
     $caption = $null
     try { $caption = (Get-WmiObject -Class Win32_OperatingSystem).Caption } catch { }
     if (-not $caption) { $caption = [string]$cv.ProductName }
-    # Windows 11 ��ע���� ProductName ��Ϊ "Windows 10"�����ڲ��汾�� >= 22000 ����
+    # Windows 11 的注册表 ProductName 仍为 "Windows 10"，按内部版本号 >= 22000 修正
     if (-not $isServer -and $build -ge 22000) {
         $caption = $caption -replace 'Windows 10', 'Windows 11'
     }
@@ -581,16 +581,16 @@ function Format-Error($ErrRecord) {
 }
 
 function Get-LicenseSummary($Lic) {
-    if (-not $Lic) { return @{ Text = 'δ��װ��Կ'; Color = 'DarkYellow' } }
+    if (-not $Lic) { return @{ Text = '未安装密钥'; Color = 'DarkYellow' } }
     $st = [int]$Lic.LicenseStatus
     $mins = [long]$Lic.GracePeriodRemaining
     if ($st -eq 1) {
-        if ($mins -eq 0) { return @{ Text = '�����ü���'; Color = 'Green' } }
+        if ($mins -eq 0) { return @{ Text = '已永久激活'; Color = 'Green' } }
         $days = [int][math]::Floor($mins / 1440)
-        return @{ Text = ('�Ѽ��� (ʣ�� {0} ��)' -f $days); Color = 'Green' }
+        return @{ Text = ('已激活 (剩余 {0} 天)' -f $days); Color = 'Green' }
     }
     $label = $StatusText[$st]
-    if (-not $label) { $label = '״̬�� ' + $st }
+    if (-not $label) { $label = '状态码 ' + $st }
     if ($st -eq 2 -or $st -eq 3 -or $st -eq 6) {
         return @{ Text = $label; Color = 'Yellow' }
     }
@@ -599,22 +599,22 @@ function Get-LicenseSummary($Lic) {
 
 function Show-License($Lic) {
     if (-not $Lic) {
-        Write-Warn 'δ�ҵ��Ѱ�װ�Ĳ�Ʒ��Կ'
+        Write-Warn '未找到已安装的产品密钥'
         return
     }
     $sum = Get-LicenseSummary $Lic
-    Write-KV '��Ʒ����' $Lic.Name
-    Write-KV '��Ȩ����' $Lic.Description
-    Write-KV '������Կ' ('*****-' + $Lic.PartialProductKey) 'Yellow'
-    Write-KV '����״̬' $sum.Text $sum.Color
+    Write-KV '产品名称' $Lic.Name
+    Write-KV '授权渠道' $Lic.Description
+    Write-KV '部分密钥' ('*****-' + $Lic.PartialProductKey) 'Yellow'
+    Write-KV '激活状态' $sum.Text $sum.Color
 
     $mins = [long]$Lic.GracePeriodRemaining
     if ([int]$Lic.LicenseStatus -eq 1 -and $mins -eq 0) {
-        Write-KV '��Ч����' '������Ч' 'Green'
+        Write-KV '有效期限' '永久有效' 'Green'
     } elseif ($mins -gt 0) {
         $exp = (Get-Date).AddMinutes($mins)
         $days = [math]::Floor($mins / 1440)
-        Write-KV '��Ч����' ('ʣ�� {0} �죨�� {1}��' -f $days, $exp.ToString('yyyy-MM-dd HH:mm'))
+        Write-KV '有效期限' ('剩余 {0} 天（至 {1}）' -f $days, $exp.ToString('yyyy-MM-dd HH:mm'))
     }
     if ($Lic.Description -match 'KMSCLIENT') {
         $kms = $Lic.KeyManagementServiceMachine
@@ -622,7 +622,7 @@ function Show-License($Lic) {
         if ($kms) {
             $port = $Lic.KeyManagementServiceMachinePort
             if (-not $port) { $port = 1688 }
-            Write-KV 'KMS ����' ('{0}:{1}' -f $kms, $port) 'Cyan'
+            Write-KV 'KMS 主机' ('{0}:{1}' -f $kms, $port) 'Cyan'
         }
     }
 }
@@ -648,13 +648,13 @@ function Test-KmsPort([string]$HostName, [int]$Port) {
 $script:KmsChecked = $null
 function Assert-KmsServer($o) {
     if ($script:KmsChecked -ne $null) { return $script:KmsChecked }
-    Write-Step ('���� KMS ��������ͨ�� ({0}:{1})' -f $o.Server, $o.Port)
+    Write-Step ('测试 KMS 服务器连通性 ({0}:{1})' -f $o.Server, $o.Port)
     $ping = Test-KmsPort $o.Server $o.Port
     if ($ping.Ok) {
-        Write-Ok ('���ӳɹ�����Ӧ��ʱ {0} ms��' -f $ping.Ms)
+        Write-Ok ('连接成功（响应耗时 {0} ms）' -f $ping.Ms)
         $script:KmsChecked = $true
     } else {
-        Write-Err '�޷����� KMS �����������������硢����ǽ�������� KMS ��������'
+        Write-Err '无法连接 KMS 服务器，请检查网络、防火墙，或更换 KMS 服务器。'
         $script:KmsChecked = $false
     }
     return $script:KmsChecked
@@ -664,7 +664,7 @@ function Confirm-Action([string]$Prompt) {
     Write-Host ''
     Write-Host ('      [?] ' + $Prompt + ' (y/N): ') -ForegroundColor Yellow -NoNewline
     $ans = Read-Host
-    return ($ans -match '^(y|yes|��)$')
+    return ($ans -match '^(y|yes|是)$')
 }
 
 function Test-Admin {
@@ -673,128 +673,128 @@ function Test-Admin {
 }
 
 # =============================================================================
-#  5. Windows ����ģ��
+#  5. Windows 激活模块
 # =============================================================================
 function Invoke-Windows($o) {
-    Write-Section 'Windows ����'
+    Write-Section 'Windows 激活'
 
-    # 1. ����ϵͳ��Ϣ
-    Write-Step '���⵱ǰϵͳ��Ϣ'
+    # 1. 检测系统信息
+    Write-Step '检测当前系统信息'
     $os = Get-OSInfo
-    Write-KV '����ϵͳ' $os.Caption 'Cyan'
+    Write-KV '操作系统' $os.Caption 'Cyan'
     $verText = $os.BuildStr
-    if ($os.Version) { $verText = '{0} (�ڲ��汾 {1})' -f $os.Version, $os.BuildStr }
-    Write-KV 'ϵͳ�汾' $verText
-    Write-KV '�汾��ʶ' $os.Edition
-    Write-KV 'ϵͳ�ܹ�' $os.Arch
+    if ($os.Version) { $verText = '{0} (内部版本 {1})' -f $os.Version, $os.BuildStr }
+    Write-KV '系统版本' $verText
+    Write-KV '版本标识' $os.Edition
+    Write-KV '系统架构' $os.Arch
 
     if ($o.Status) {
-        Write-Step 'Windows ��ǰ����״̬'
+        Write-Step 'Windows 当前激活状态'
         Show-License (Get-WinLicense)
         return 0
     }
 
-    # 2. ƥ�� GVLK
-    Write-Step 'ƥ��΢���ٷ� KMS �ͻ�����Կ (GVLK)'
+    # 2. 匹配 GVLK
+    Write-Step '匹配微软官方 KMS 客户端密钥 (GVLK)'
     if ($os.Edition -like '*Eval*') {
-        Write-Err '��ǰϵͳΪ������ (Evaluation)����֧��ֱ��ͨ�� KMS ���'
-        Write-Note '����ʹ�� DISM /Online /Set-Edition ת��Ϊ��ʽ���������б����ߡ�'
+        Write-Err '当前系统为评估版 (Evaluation)，不支持直接通过 KMS 激活。'
+        Write-Note '请先使用 DISM /Online /Set-Edition 转换为正式版后再运行本工具。'
         return 3
     }
     $family = Get-Family $os.Build $os.IsServer $os.Edition
     $key = $null
     if ($family -and $GVLK.ContainsKey($family)) { $key = $GVLK[$family][$os.Edition] }
     if (-not $key) {
-        Write-Err ('δ�ҵ����汾��ʶ "{0}" ƥ���� GVLK��' -f $os.Edition)
-        Write-Note 'KMS ��������רҵ��/��ҵ��/������/����վ��/LTSC/Server��'
-        Write-Note '��ͥ�� (Core / Home) �����۰汾�޹ٷ� KMS ��Կ��'
+        Write-Err ('未找到与版本标识 "{0}" 匹配的 GVLK。' -f $os.Edition)
+        Write-Note 'KMS 仅适用于专业版/企业版/教育版/工作站版/LTSC/Server；'
+        Write-Note '家庭版 (Core / Home) 等零售版本无官方 KMS 密钥。'
         return 2
     }
-    Write-KV '��Ʒϵ��' $FamilyName[$family]
-    Write-KV 'ƥ����Կ' $key 'Yellow'
-    Write-KV 'KMS ����' ('{0}:{1}' -f $o.Server, $o.Port) 'Cyan'
+    Write-KV '产品系列' $FamilyName[$family]
+    Write-KV '匹配密钥' $key 'Yellow'
+    Write-KV 'KMS 主机' ('{0}:{1}' -f $o.Server, $o.Port) 'Cyan'
 
     if ($o.Check) {
-        Write-Ok 'Windows ������������Կƥ�����ɣ�������ģʽ��δ�޸�ϵͳ��'
+        Write-Ok 'Windows 环境检测与密钥匹配完成（仅检测模式，未修改系统）'
         return 0
     }
 
     if (-not (Test-Admin)) {
-        Write-Err '��Ҫ����ԱȨ�޲��ܼ�����Ҽ�ѡ��[�Թ���Ա��������]��'
+        Write-Err '需要管理员权限才能激活，请右键选择[以管理员身份运行]。'
         return 1
     }
 
-    # 3. �������м���״̬���������ü���
-    Write-Step '���鵱ǰ��Ȩ״̬'
+    # 3. 检查现有激活状态，保护永久激活
+    Write-Step '检查当前授权状态'
     $lic = Get-WinLicense
     Show-License $lic
     if ($lic -and [int]$lic.LicenseStatus -eq 1 -and [long]$lic.GracePeriodRemaining -eq 0 -and $lic.Description -notmatch 'KMSCLIENT') {
-        Write-Warn '��ǰϵͳ�Ѵ������ü���״̬����������֤ / ���� / OEM / MAK����'
+        Write-Warn '当前系统已处于永久激活状态（数字许可证 / 零售 / OEM / MAK）。'
         if (-not $o.Force) {
             if ($o.Silent) {
-                Write-Note '��Ĭģʽ�����Զ�����������ǿ���滻���� /force����'
+                Write-Note '静默模式下已自动跳过（如需强制替换请加 /force）。'
                 return 0
             }
-            if (-not (Confirm-Action '�����������滻Ϊ 180 �����ڵ� KMS ����Ƿ�������')) {
-                Write-Warn '��ȡ�� Windows ����������'
+            if (-not (Confirm-Action '继续操作将替换为 180 天周期的 KMS 激活，是否继续？')) {
+                Write-Warn '已取消 Windows 激活操作。'
                 return 5
             }
         }
     }
 
-    # 4. ���� KMS ��������ͨ��
+    # 4. 测试 KMS 服务器连通性
     if (-not (Assert-KmsServer $o)) { return 4 }
 
     $svc = Get-WmiObject -Class SoftwareLicensingService
 
-    # 5. ��װ GVLK
-    Write-Step '��װ GVLK ��Ʒ��Կ'
+    # 5. 安装 GVLK
+    Write-Step '安装 GVLK 产品密钥'
     $keyTail = $key.Substring($key.Length - 5)
     if ($lic -and $lic.PartialProductKey -eq $keyTail) {
-        Write-Ok ('ϵͳ���Ѱ�װ��ͬ GVLK (*****-{0})�������ظ���װ' -f $keyTail)
+        Write-Ok ('系统中已安装相同 GVLK (*****-{0})，无需重复安装' -f $keyTail)
     } else {
         try {
             [void]$svc.InstallProductKey($key)
             [void]$svc.RefreshLicenseStatus()
-            Write-Ok ('�ɹ���װ��Կ: ' + $key)
+            Write-Ok ('成功安装密钥: ' + $key)
         } catch {
-            Write-Err ('��װ��Կʧ��: ' + (Format-Error $_))
+            Write-Err ('安装密钥失败: ' + (Format-Error $_))
             return 1
         }
     }
 
-    # 6. ���� KMS ������
-    Write-Step 'д�� KMS ���������ò����󼤻�'
+    # 6. 配置 KMS 并激活
+    Write-Step '写入 KMS 服务器配置并请求激活'
     try {
         [void]$svc.SetKeyManagementServiceMachine($o.Server)
         [void]$svc.SetKeyManagementServicePort($o.Port)
         $lic = Get-WinLicense
-        if (-not $lic) { throw '��װ��Կ��δ�ܶ�ȡ�� Windows ��Ȩ����' }
+        if (-not $lic) { throw '安装密钥后未能读取到 Windows 授权对象' }
         try { [void]$lic.ClearKeyManagementServiceMachine() } catch { }
         try { [void]$lic.ClearKeyManagementServicePort() } catch { }
         [void]$lic.Activate()
         [void]$svc.RefreshLicenseStatus()
-        Write-Ok 'KMS ���������ѳɹ�����'
+        Write-Ok 'KMS 激活请求已成功完成'
     } catch {
-        Write-Err ('����ʧ��: ' + (Format-Error $_))
+        Write-Err ('激活失败: ' + (Format-Error $_))
         return 1
     }
 
-    # 7. ��֤����
-    Write-Step '��֤ Windows ��������'
+    # 7. 验证结果
+    Write-Step '验证 Windows 激活结果'
     $lic = Get-WinLicense
     Show-License $lic
     if ($lic -and [int]$lic.LicenseStatus -eq 1) {
         Write-Host ''
-        Write-Ok 'Windows �����ɹ���ϵͳ��������ʱ�Զ��� KMS ���������ڡ�'
+        Write-Ok 'Windows 激活成功！系统将在联网时自动向 KMS 服务器续期。'
         return 0
     }
-    Write-Err 'Windows ����δ�ɹ����ɣ�������������Ϣ���Ժ����ԡ�'
+    Write-Err 'Windows 激活未成功完成，请检查输出信息或稍后重试。'
     return 1
 }
 
 # =============================================================================
-#  6. Office ����ģ��
+#  6. Office 激活模块
 # =============================================================================
 function Get-OfficeLicInfo($Wmi, [string]$ServiceClass) {
     $name = [string]$Wmi.Name
@@ -864,7 +864,7 @@ function Get-OfficeInstallInfo {
                 $path = $null
                 try { $path = (Get-ItemProperty $p -ErrorAction Stop).Path } catch { }
                 if ($path -and ($path -notmatch 'root\\')) {
-                    $lines += ('MSI ��װ�� (Office {0}): {1}' -f $v, $path)
+                    $lines += ('MSI 安装版 (Office {0}): {1}' -f $v, $path)
                 }
             }
         }
@@ -877,7 +877,7 @@ function Select-OfficeToInstall($KmsLics, [string[]]$ReleaseIds) {
     $missing  = @($KmsLics | Where-Object { -not $_.HasKey -and $_.Key })
     if ($missing.Count -eq 0) { return @() }
 
-    # �� C2R ע�����г���ʵ�ʰ�װ�� Volume ��Ʒ���� ProPlus2021Volume, VisioPro2021Volume������ʵ�ʰ�װ����ȱʧ��Կ
+    # 若 C2R 注册表列出了实际安装的 Volume 产品（如 ProPlus2021Volume, VisioPro2021Volume），按实际安装补齐缺失密钥
     if ($ReleaseIds -and @($ReleaseIds).Count -gt 0) {
         $matched = @()
         foreach ($m in $missing) {
@@ -892,21 +892,21 @@ function Select-OfficeToInstall($KmsLics, [string[]]$ReleaseIds) {
         if ($matched.Count -gt 0) { return $matched }
     }
 
-    # ����δ��װ�κ� Office KMS ��Կ����Ϊ���п�ƥ���� KMS ����֤��װ GVLK
+    # 若尚未安装任何 Office KMS 密钥，则为所有可匹配的 KMS 许可证安装 GVLK
     if ($haveKeys.Count -eq 0) { return $missing }
     return @()
 }
 
 function Invoke-Office($o) {
-    Write-Section 'Office ����'
+    Write-Section 'Office 激活'
 
-    # 1. ���ⰲװ
-    Write-Step '�����Ѱ�װ�� Office ����'
+    # 1. 检测安装
+    Write-Step '检测已安装的 Office 组件'
     $inst = Get-OfficeInstallInfo
     if (@($inst.Lines).Count -gt 0) {
-        foreach ($line in $inst.Lines) { Write-KV '��װ��Ϣ' $line 'Cyan' }
+        foreach ($line in $inst.Lines) { Write-KV '安装信息' $line 'Cyan' }
     } else {
-        Write-KV '��װ��Ϣ' 'δ��ע�����з��� Office ��װ��¼' 'DarkGray'
+        Write-KV '安装信息' '未在注册表中发现 Office 安装记录' 'DarkGray'
     }
 
     $all     = @(Get-OfficeLicenses)
@@ -914,9 +914,9 @@ function Invoke-Office($o) {
     $withKey = @($all | Where-Object { $_.HasKey })
 
     if ($o.Status) {
-        Write-Step 'Office ��ǰ����״̬'
+        Write-Step 'Office 当前激活状态'
         if ($withKey.Count -eq 0) {
-            Write-Warn 'δ�ҵ��Ѱ�װ��Ʒ��Կ�� Office ����'
+            Write-Warn '未找到已安装产品密钥的 Office 组件'
             return 0
         }
         foreach ($l in $withKey) {
@@ -927,19 +927,19 @@ function Invoke-Office($o) {
         return 0
     }
 
-    # 2. ƥ��������Ȩ����֤
-    Write-Step 'ƥ�� Office ������Ȩ����֤���ٷ� GVLK'
+    # 2. 匹配批量授权许可证
+    Write-Step '匹配 Office 批量授权许可证与官方 GVLK'
     if ($kms.Count -eq 0) {
         if (@($inst.Lines).Count -eq 0 -and $all.Count -eq 0) {
-            Write-Err 'δ�ڱ������⵽�κ� Office ������'
+            Write-Err '未在本机检测到任何 Office 组件。'
             return 2
         }
-        Write-Err '�Ѱ�װ�� Office ����������Ȩ��VL���汾���޷�ͨ�� KMS ���'
+        Write-Err '已安装的 Office 不是批量授权（VL）版本，无法通过 KMS 激活。'
         foreach ($l in $withKey) {
-            Write-Note ('�Ѱ�װ����: {0} ({1})' -f $l.Display, $l.Wmi.Description)
+            Write-Note ('已安装渠道: {0} ({1})' -f $l.Display, $l.Wmi.Description)
         }
-        Write-Note '���۰� / Microsoft 365 ��ʹ�������˺Ż�������Կ���'
-        Write-Note '���� KMS ������� Office Tool Plus �� ODT ��װ VL �����档'
+        Write-Note '零售版 / Microsoft 365 请使用正版账号或零售密钥激活；'
+        Write-Note '如需 KMS 激活，请用 Office Tool Plus 或 ODT 安装 VL 批量版。'
         return 2
     }
 
@@ -947,60 +947,60 @@ function Invoke-Office($o) {
     $toInstall = @(Select-OfficeToInstall $kms $inst.ReleaseIds)
 
     foreach ($l in $targets) {
-        Write-KV $l.Display ('�Ѱ�װ GVLK (*****-{0})' -f $l.Wmi.PartialProductKey) 'Green' 24
+        Write-KV $l.Display ('已安装 GVLK (*****-{0})' -f $l.Wmi.PartialProductKey) 'Green' 24
     }
     foreach ($l in $toInstall) {
-        Write-KV $l.Display ('����װ GVLK: ' + $l.Key) 'Yellow' 24
+        Write-KV $l.Display ('待安装 GVLK: ' + $l.Key) 'Yellow' 24
     }
     if ($targets.Count -eq 0 -and $toInstall.Count -eq 0) {
         foreach ($l in $kms) {
-            Write-KV $l.Display 'δ�ܴ�����֤����ƥ�䵽��Ӧ GVLK' 'Red' 24
+            Write-KV $l.Display '未能从许可证名称匹配到对应 GVLK' 'Red' 24
         }
-        Write-Err '���⵽ Office ������Ȩ����֤����δ��ƥ�䵽��Ӧ�� GVLK��'
+        Write-Err '检测到 Office 批量授权许可证，但未能匹配到对应的 GVLK。'
         return 2
     }
-    Write-KV 'KMS ����' ('{0}:{1}' -f $o.Server, $o.Port) 'Cyan' 24
+    Write-KV 'KMS 主机' ('{0}:{1}' -f $o.Server, $o.Port) 'Cyan' 24
 
     if ($o.Check) {
-        Write-Ok 'Office ������������Կƥ�����ɣ�������ģʽ��δ�޸�ϵͳ��'
+        Write-Ok 'Office 环境检测与密钥匹配完成（仅检测模式，未修改系统）'
         return 0
     }
 
     if (-not (Test-Admin)) {
-        Write-Err '��Ҫ����ԱȨ�޲��ܼ�����Ҽ�ѡ��[�Թ���Ա��������]��'
+        Write-Err '需要管理员权限才能激活，请右键选择[以管理员身份运行]。'
         return 1
     }
 
-    # 3. ���� KMS ��������ͨ��
+    # 3. 测试 KMS 服务器连通性
     if (-not (Assert-KmsServer $o)) { return 4 }
 
-    # 4. ��װȱʧ�� GVLK
+    # 4. 安装缺失的 GVLK
     if ($toInstall.Count -gt 0) {
-        Write-Step '��װ Office GVLK ��Ʒ��Կ'
+        Write-Step '安装 Office GVLK 产品密钥'
         foreach ($l in $toInstall) {
             try {
                 $svc = Get-WmiObject -Class $l.Service
                 [void]$svc.InstallProductKey($l.Key)
                 [void]$svc.RefreshLicenseStatus()
-                Write-Ok ('{0}: �ɹ���װ {1}' -f $l.Display, $l.Key)
+                Write-Ok ('{0}: 成功安装 {1}' -f $l.Display, $l.Key)
             } catch {
-                Write-Err ('{0}: ��װ��Կʧ�� ({1})' -f $l.Display, (Format-Error $_))
+                Write-Err ('{0}: 安装密钥失败 ({1})' -f $l.Display, (Format-Error $_))
             }
         }
         $targets = @(Get-OfficeLicenses | Where-Object { $_.IsKms -and $_.HasKey })
         if ($targets.Count -eq 0) {
-            Write-Err 'δ�ܳɹ���װ�κοɼ����� Office GVLK��'
+            Write-Err '未能成功安装任何可激活的 Office GVLK。'
             return 1
         }
     }
 
-    # 5. �������� KMS ������
-    Write-Step 'д�� KMS ���������ò����� Office'
+    # 5. 逐个配置 KMS 并激活
+    Write-Step '写入 KMS 服务器配置并激活 Office'
     foreach ($l in $targets) {
         $p = $l.Wmi
         $svc = Get-WmiObject -Class $l.Service
         try {
-            # ���������ڵ�����Ʒ�����ϣ������Ķ� Windows ϵͳ��ȫ�� KMS ��������
+            # 优先设置在单个产品对象上，避免改动 Windows 系统的全局 KMS 主机设置
             $productLevel = $true
             try {
                 [void]$p.SetKeyManagementServiceMachine($o.Server)
@@ -1011,15 +1011,15 @@ function Invoke-Office($o) {
                 [void]$svc.SetKeyManagementServicePort($o.Port)
             }
             [void]$p.Activate()
-            Write-Ok ($l.Display + ': ���������ɹ�')
+            Write-Ok ($l.Display + ': 激活请求成功')
         } catch {
             Write-Err ('{0}: {1}' -f $l.Display, (Format-Error $_))
         }
         try { [void]$svc.RefreshLicenseStatus() } catch { }
     }
 
-    # 6. ��֤����
-    Write-Step '��֤ Office ��������'
+    # 6. 验证结果
+    Write-Step '验证 Office 激活结果'
     $after = @(Get-OfficeLicenses | Where-Object { $_.IsKms -and $_.HasKey })
     $okCount = 0
     foreach ($l in $after) {
@@ -1030,30 +1030,30 @@ function Invoke-Office($o) {
     }
     Write-Host ''
     if ($okCount -gt 0 -and $okCount -eq $after.Count) {
-        Write-Ok 'Office �����ɹ���������������ʱ�Զ��� KMS ���������ڡ�'
+        Write-Ok 'Office 激活成功！软件将在联网时自动向 KMS 服务器续期。'
         return 0
     }
     if ($okCount -gt 0) {
-        Write-Warn ('���� Office ���������ɹ���{0}/{1}��' -f $okCount, $after.Count)
+        Write-Warn ('部分 Office 组件激活成功（{0}/{1}）' -f $okCount, $after.Count)
         return 1
     }
-    Write-Err 'Office ����δ���ɣ�������������Ϣ���Ժ����ԡ�'
+    Write-Err 'Office 激活未完成，请检查输出信息或稍后重试。'
     return 1
 }
 
 # =============================================================================
-#  7. ����ʽ�˵���������
+#  7. 交互式菜单与主入口
 # =============================================================================
 function Invoke-Targets($o) {
     $script:KmsChecked = $null
     $codes = @()
     if ($o.Windows) {
         try { $codes += Invoke-Windows $o }
-        catch { Write-Err ('Windows �����쳣: ' + (Format-Error $_)); $codes += 1 }
+        catch { Write-Err ('Windows 处理异常: ' + (Format-Error $_)); $codes += 1 }
     }
     if ($o.Office) {
         try { $codes += Invoke-Office $o }
-        catch { Write-Err ('Office �����쳣: ' + (Format-Error $_)); $codes += 1 }
+        catch { Write-Err ('Office 处理异常: ' + (Format-Error $_)); $codes += 1 }
     }
     $worst = 0
     foreach ($c in $codes) {
@@ -1073,13 +1073,13 @@ function Show-EnvironmentBar($o) {
     $os = Get-OSInfo
     $verStr = $os.BuildStr
     if ($os.Version) { $verStr = '{0} ({1})' -f $os.Version, $os.BuildStr }
-    $adminText  = if (Test-Admin) { '����Ա' } else { '��ͨ�û� (����������ԱȨ��)' }
+    $adminText  = if (Test-Admin) { '管理员' } else { '普通用户 (激活需管理员权限)' }
     $adminColor = if (Test-Admin) { 'Green'  } else { 'Yellow' }
 
     Write-Host ''
-    Write-KV '��ǰϵͳ' ('{0} [{1}]' -f $os.Caption, $verStr) 'White' 12
-    Write-KV '����Ȩ��' $adminText $adminColor 12
-    Write-KV 'KMS ����' ('{0}:{1}' -f $o.Server, $o.Port) 'Cyan' 12
+    Write-KV '当前系统' ('{0} [{1}]' -f $os.Caption, $verStr) 'White' 12
+    Write-KV '运行权限' $adminText $adminColor 12
+    Write-KV 'KMS 主机' ('{0}:{1}' -f $o.Server, $o.Port) 'Cyan' 12
     Write-Rule '-'
 }
 
@@ -1095,8 +1095,8 @@ function Write-MenuItem([string]$Key, [string]$Title, [string]$Desc = '', [strin
 
 function Prompt-Server($o) {
     Write-Host ''
-    Write-Host ('      ��ǰ KMS ���� : {0}:{1}' -f $o.Server, $o.Port) -ForegroundColor Cyan
-    Write-Host '      �����µ�ַ (�س��ָ�Ĭ�� kms.cgtsoft.com): ' -ForegroundColor Gray -NoNewline
+    Write-Host ('      当前 KMS 主机 : {0}:{1}' -f $o.Server, $o.Port) -ForegroundColor Cyan
+    Write-Host '      输入新地址 (回车恢复默认 kms.cgtsoft.com): ' -ForegroundColor Gray -NoNewline
     $inp = (Read-Host).Trim()
     if (-not $inp) {
         $o.Server = $Config.Server
@@ -1104,7 +1104,7 @@ function Prompt-Server($o) {
     } else {
         [void](Parse-ServerSpec $inp $o)
     }
-    Write-Ok ('������ KMS ������Ϊ {0}:{1}' -f $o.Server, $o.Port)
+    Write-Ok ('已设置 KMS 服务器为 {0}:{1}' -f $o.Server, $o.Port)
     Start-Sleep -Milliseconds 700
 }
 
@@ -1114,18 +1114,18 @@ function Show-Menu($o) {
         Show-Banner
         Show-EnvironmentBar $o
         Write-Host ''
-        Write-MenuItem '1' '���� Windows'          '�Զ�ʶ��ϵͳ�汾������'
-        Write-MenuItem '2' '���� Office'           '�Զ�ʶ���Ѱ�װ�� Office �����沢����'
-        Write-MenuItem '3' '���� Windows + Office' '�����Զ�����ϵͳ�� Office'
+        Write-MenuItem '1' '激活 Windows'          '自动识别系统版本并激活'
+        Write-MenuItem '2' '激活 Office'           '自动识别已安装的 Office 批量版并激活'
+        Write-MenuItem '3' '激活 Windows + Office' '依次自动激活系统和 Office'
         Write-Host ''
-        Write-MenuItem '4' '�鿴����״̬'          '�鿴 Windows �� Office ��ϸ��Ȩ״̬' 'Yellow'
-        Write-MenuItem '5' '������ƥ������'        '���԰汾ʶ���� GVLK ƥ�䣬�����κ��޸�' 'Yellow'
-        Write-MenuItem '6' '�л� KMS ������'       '��ʱ�������λỰʹ�õ� KMS ������ַ' 'Yellow'
+        Write-MenuItem '4' '查看激活状态'          '查看 Windows 与 Office 详细授权状态' 'Yellow'
+        Write-MenuItem '5' '仅检测匹配结果'        '测试版本识别与 GVLK 匹配，不做任何修改' 'Yellow'
+        Write-MenuItem '6' '切换 KMS 服务器'       '临时更换本次会话使用的 KMS 主机地址' 'Yellow'
         Write-Host ''
-        Write-MenuItem '0' '�˳�����'              '' 'DarkGray'
+        Write-MenuItem '0' '退出程序'              '' 'DarkGray'
         Write-Host ''
         Write-Rule '-'
-        Write-Host '  ������ѡ������ [0-6]: ' -ForegroundColor Cyan -NoNewline
+        Write-Host '  请输入选项编号 [0-6]: ' -ForegroundColor Cyan -NoNewline
         $choice = (Read-Host).Trim()
 
         $o.Windows = $false; $o.Office = $false; $o.Check = $false; $o.Status = $false
@@ -1142,7 +1142,7 @@ function Show-Menu($o) {
         }
         if (-not $runTarget) { continue }
         [void](Invoke-Targets $o)
-        Wait-Key '���������������˵�...'
+        Wait-Key '按任意键返回主菜单...'
     }
 }
 
@@ -1152,7 +1152,7 @@ try {
     if ($opts.Help) {
         Show-Banner
         Show-Help
-        if (-not $opts.Silent) { Wait-Key '���������˳�...' }
+        if (-not $opts.Silent) { Wait-Key '按任意键退出...' }
     } elseif ($opts.Windows -or $opts.Office -or $opts.Check -or $opts.Status -or $opts.Silent) {
         if (-not $opts.Windows -and -not $opts.Office) {
             $opts.Windows = $true
@@ -1160,13 +1160,13 @@ try {
         }
         Show-Banner
         $code = Invoke-Targets $opts
-        if (-not $opts.Silent) { Wait-Key '���������˳�...' }
+        if (-not $opts.Silent) { Wait-Key '按任意键退出...' }
     } else {
         $code = Show-Menu $opts
     }
 } catch {
-    Write-Err ('����δ�����Ĵ���: ' + (Format-Error $_))
+    Write-Err ('发生未处理的错误: ' + (Format-Error $_))
     $code = 1
-    if (-not $opts.Silent) { Wait-Key '���������˳�...' }
+    if (-not $opts.Silent) { Wait-Key '按任意键退出...' }
 }
 exit $code
